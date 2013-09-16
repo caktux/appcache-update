@@ -7,18 +7,17 @@
     debug: false,
     autoswap: false,
     showUpdateProgress: true,
+    showUpdateNotice: true,
     handleLogout: false,
     logoutLink: 'a[href*=logout]',
     appStatus: 'online',
     appEvents: {},
     // Create a cache properties object to help us keep track of
     // the progress of the caching.
-    cacheProperties: {
-      filesDownloaded: 0,
-      totalFiles: 0
-      // TODO - Chrome ignores abort(), Safari gags a few times
-      // allowUpdateFlag = false;
-    },
+    filesDownloaded: 0,
+    totalFiles: 0
+    // TODO - Chrome ignores abort(), Safari gags a few times
+    // allowUpdateFlag: false,
     mobileIndicator: '#mobile-refresh',
     // Get the total number of files in the cache manifest,
     // parsing the manifest file on the first run to count
@@ -26,9 +25,9 @@
     // localStorage
     getTotalFiles: function() {
       // Check the total file count and reset download count.
-      AppCache.cacheProperties.filesDownloaded = 0;
+      AppCache.filesDownloaded = 0;
       var lastTotalFiles = (localStorage.getItem('appCacheTotalFiles')) ? JSON.parse((localStorage.getItem('appCacheTotalFiles'))) : 0;
-      AppCache.cacheProperties.totalFiles = lastTotalFiles;
+      AppCache.totalFiles = lastTotalFiles;
 
       if (lastTotalFiles) return lastTotalFiles;
 
@@ -72,7 +71,7 @@
           // Store the total number of files. Here, we are
           // adding one for *THIS* file, which is cached
           // implicitly as it points to the manifest.
-          AppCache.cacheProperties.totalFiles = totalFiles;
+          AppCache.totalFiles = totalFiles;
           localStorage.setItem('appCacheTotalFiles', JSON.stringify(totalFiles));
           return totalFiles;
         }
@@ -91,19 +90,19 @@
     // Display the download progress.
     displayProgress: function() {
       // Check to see if we have a total number of files.
-      if (AppCache.cacheProperties.totalFiles) {
+      if (AppCache.totalFiles) {
         // We have the total number of files, so output the
         // running total as a function of the known total.
         AppCache.cacheProgress =
-          AppCache.cacheProperties.filesDownloaded + " " + 
+          AppCache.filesDownloaded + " " + 
           'of ' +
-          AppCache.cacheProperties.totalFiles + " " +
+          AppCache.totalFiles + " " +
           'files downloaded.';
       } else {
         // We don't yet know the total number of files, so
         // just output the running total.
         AppCache.cacheProgress =
-          AppCache.cacheProperties.filesDownloaded + " " +
+          AppCache.filesDownloaded + " " +
           'files downloaded.';
       }
       $('#appCacheProgress').text(AppCache.cacheProgress);
@@ -144,7 +143,7 @@
         var updateElement = $('<div id="appcache-update-available">Update available, <a href="#">refresh</a>?</div>');
         updateElement.appendTo('body');
         setTimeout( function() { updateElement.addClass('slidein'); }, 1);
-        updateElement.find('a').click( function(e) {
+        updateElement.find('a').on('click', function(e) {
           e.preventDefault(); e.stopPropagation();
           updateElement.removeClass('slidein');
           setTimeout( function() {
@@ -164,7 +163,7 @@
 
   // This gets fired when the browser is downloading the files
   // defined in the cache manifest.
-  $(AppCache).bind("downloading", function( event ) {
+  $(AppCache).on("downloading", function( event ) {
     // Get the total number of files in our manifest.
     AppCache.getTotalFiles();
 
@@ -188,14 +187,14 @@
 
   // This gets fired for every file that is downloaded by the
   // cache update.
-  $(AppCache).bind("progress", function( event ) {
+  $(AppCache).on("progress", function( event ) {
     // Increment the running total.
-    filesDownloaded = AppCache.cacheProperties.filesDownloaded++;
+    filesDownloaded = AppCache.filesDownloaded++;
     localStorage.setItem('appCacheTotalFiles', JSON.stringify(filesDownloaded));
 
     // Update our progress bar
     if (AppCache.showUpdateProgress) {
-      var filesPercent = filesDownloaded * 100 / AppCache.cacheProperties.totalFiles;
+      var filesPercent = filesDownloaded * 100 / AppCache.totalFiles;
       var progressElement = $('#appcache-progress-status');
       progressElement.css('width', filesPercent + '%');
     }
@@ -246,33 +245,33 @@
     // List for checking events. This gets fired when the browser
     // is checking for an udpated manifest file or is attempting
     // to download it for the first time.
-    $(AppCache).bind("checking", function( event ){
+    $(AppCache).on("checking", function( event ){
       AppCache.logEvent( "Checking for manifest" );
       $('#applicationEvents').text(AppCache.appEvents);
     });
 
     // This gets fired if there is no update to the manifest file
     // that has just been checked.
-    $(AppCache).bind("noupdate", function( event ){
+    $(AppCache).on("noupdate", function( event ){
       AppCache.logEvent( "No cache updates" );
       $('#applicationEvents').text(AppCache.appEvents);
     });
 
     // This gets fired when the cache manifest cannot be found.
-    $(AppCache).bind("obsolete", function( event ) {
+    $(AppCache).on("obsolete", function( event ) {
       AppCache.logEvent( "Manifest cannot be found" );
       $('#applicationEvents').text(AppCache.appEvents);
     });
 
     // This gets fired when all cached files have been
     // downloaded and are available to the application cache.
-    $(AppCache).bind("cached", function( event ) {
+    $(AppCache).on("cached", function( event ) {
       AppCache.logEvent( "All files downloaded" );
       $('#applicationEvents').text(AppCache.appEvents);
     });
 
     // This gets fired when an error occurs
-    $(AppCache).bind("error", function( event ) {
+    $(AppCache).on("error", function( event ) {
       AppCache.logEvent( "An error occurred" );
       $('#applicationEvents').text(AppCache.appEvents);
     });
@@ -308,7 +307,7 @@
     var cacheProgress = $( "#appCacheProgress" );
 
     // Bind the manual update link.
-    appUpdate.click( function( event ) {
+    appUpdate.on('click', function( event ) {
       // Prevent the default event.
       event.preventDefault();
       // Manually ask the cache to update.
