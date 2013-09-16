@@ -51,6 +51,10 @@
 }
 
 #appcache-progress-status {
+  -webkit-transition: width .1s ease-in;
+  -moz-transition: width .1s ease-in;
+  -o-transition: width .1s ease-in;
+  transition: width .1s ease-in;
   background: rgba(0,0,0,.25);
   position: absolute;
   top: 0;
