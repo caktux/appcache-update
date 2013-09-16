@@ -15,7 +15,7 @@
     // Create a cache properties object to help us keep track of
     // the progress of the caching.
     filesDownloaded: 0,
-    totalFiles: 0
+    totalFiles: 0,
     // TODO - Chrome ignores abort(), Safari gags a few times
     // allowUpdateFlag: false,
     mobileIndicator: '#mobile-refresh',
@@ -125,8 +125,8 @@
   // cache will need to be swapped out.
   $(AppCache).on("updateready", function( event ) {
     // Swap out the old cache.
-    if (AppCache.autoswap || AppCache.showUpdateProgress) window.applicationCache.swapCache();
-    if (AppCache.showUpdateProgress) {
+    if (AppCache.autoswap || AppCache.showUpdateNotice) AppCache.swapCache();
+    if (AppCache.showUpdateNotice) {
       // Remove previous messages (inactive tabs)
       var removeUpdateNotice = function() {
         $('#appcache-update-available').remove();
