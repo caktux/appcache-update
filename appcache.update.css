@@ -1,0 +1,60 @@
+#appcache-update-available {
+  background: rgba(0,0,0,.33);
+  color: #f3f3f3;
+  line-height: 1.5em;
+  height: 1.5em;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  top: -2em;
+  z-index: 899;
+  -webkit-transform: translate3d(0px, 0, 0);
+  transform: translate(0, 0);
+  -webkit-transform: translate(0, 0);
+  -moz-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -webkit-transition: top 0.4s ease-out;
+  -moz-transition: top 0.4s ease-out;
+  -o-transition: top 0.4s ease-out;
+  transition: top 0.4s ease-out;
+}
+
+#appcache-update-available a {
+  color: #fff;
+}
+
+#appcache-update-available.slidein {
+  top: 0;
+}
+
+#appcache-update-progress {
+  background: rgba(0,0,0,.25);
+  position: absolute;
+  top: 0;
+  height: 5px;
+  width: 100%;
+  z-index: 898;
+}
+
+#appcache-update-progress.slideout {
+  transform: translate(0, 0);
+  -webkit-transform: translate(0, 0);
+  -moz-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -webkit-transition: top 0.5s ease-out;
+  -moz-transition: top 0.5s ease-out;
+  -o-transition: top 0.5s ease-out;
+  transition: top 0.5s ease-out;
+  top: -5px;
+}
+
+#appcache-progress-status {
+  background: rgba(0,0,0,.25);
+  position: absolute;
+  top: 0;
+  height: 5px;
+  width: 0;
+  z-index: 897;
+}
